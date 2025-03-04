@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat App</title>
+  <style>
+    body { 
+      font-family: Arial, sans-serif; 
+      background-color: #f0f8ff; 
+      margin: 0; 
+      padding: 20px; 
+      text-align: center; 
+    }
+    .chat-container { 
+      width: 400px; 
+      margin: 0 auto; 
+      background: white; 
+      padding: 20px; 
+      border-radius: 10px; 
+      box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+      height: 500px; 
+      display: flex; 
+      flex-direction: column; 
+    }
+    #messages { 
+      flex-grow: 1; 
+      overflow-y: auto; 
+      margin-bottom: 10px; 
+      padding: 10px; 
+      text-align: left; 
+    }
+    .message { 
+      margin: 5px 0; 
+      padding: 5px; 
+      background: #e6f3ff; 
+      border-radius: 5px; 
+    }
+    input[type="text"] { 
+      padding: 5px; 
+      margin: 10px; 
+      width: 70%; 
+    }
+    button { 
+      padding: 5px 15px; 
+      margin: 5px; 
+      background: #4a90e2; 
+      color: white; 
+      border: none; 
+      border-radius: 5px; 
+      cursor: pointer; 
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <h1>Chat App</h1>
+    <div id="messages"></div>
+    <input type="text" id="messageInput" placeholder="Type a message">
+    <button onclick="sendMessage()">Send</button>
+  </div>
+  <script>
+    let messages = []; // Simulated message history
+
+    function sendMessage() {
+      let messageInput = document.getElementById("messageInput");
+      let message = messageInput.value.trim();
+      if (message === "") {
+        alert("Please enter a message!");
+        return;
+      }
+
+      // Simulate sending (add to list immediately)
+      messages.push(message);
+      displayMessages();
+
+      // Simulate receiving (add a response after 1 second)
+      setTimeout(() => {
+        messages.push("Bot: Thanks for your message!");
+        displayMessages();
+      }, 1000);
+
+      messageInput.value = "";
+    }
+
+    function displayMessages() {
+      let messagesDiv = document.getElementById("messages");
+      messagesDiv.innerHTML = "";
+      messages.forEach(msg => {
+        let messageDiv = document.createElement("div");
+        messageDiv.className = "message";
+        messageDiv.textContent = msg;
+        messagesDiv.appendChild(messageDiv);
+      });
+      messagesDiv.scrollTop = messagesDiv.scrollHeight; // Auto-scroll to bottom
+    }
+
+    // Load saved messages on page load (optional, using localStorage)
+    window.onload = function() {
+      let savedMessages = JSON.parse(localStorage.getItem("messages") || "[]");
+      if (savedMessages.length > 0) {
+        messages = savedMessages;
+        displayMessages();
+      }
+    };
+
+    // Save messages to localStorage when sending
+    function saveMessages() {
+      localStorage.setItem("messages", JSON.stringify(messages));
+    }
+
+    // Call saveMessages after each message addition
+    sendMessage = (function(original) {
+      return function() {
+        original.apply(this, arguments);
+        saveMessages();
+      };
+    })(sendMessage);
+  </script>
+</body>
+                         </html>
